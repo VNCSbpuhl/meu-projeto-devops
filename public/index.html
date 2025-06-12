@@ -2,73 +2,39 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Tarefas</title>
+    <title>Gerenciador de Tarefas</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Minha Lista de Tarefas</h1>
-    <form id="form-tarefa">
-        <input type="text" id="input-tarefa" placeholder="Nova tarefa..." required>
-        <button type="submit">Adicionar</button>
-    </form>
-    <ul id="lista-tarefas"></ul>
-
-    <script>
-        const apiUrl = '/api/tarefas';
-        const form = document.getElementById('form-tarefa');
-        const input = document.getElementById('input-tarefa');
-        const lista = document.getElementById('lista-tarefas');
-
-        // Carregar tarefas
-        async function carregarTarefas() {
-            const response = await fetch(apiUrl);
-            const tarefas = await response.json();
-            lista.innerHTML = '';
-            tarefas.forEach(tarefa => {
-                const item = document.createElement('li');
-                item.textContent = tarefa.descricao;
-                item.className = tarefa.concluida ? 'concluida' : '';
-
-                const btnExcluir = document.createElement('button');
-                btnExcluir.textContent = 'Excluir';
-                btnExcluir.onclick = (e) => { e.stopPropagation(); excluirTarefa(tarefa.id); };
-
-                item.onclick = () => toggleTarefa(tarefa);
-
-                item.appendChild(btnExcluir);
-                lista.appendChild(item);
-            });
-        }
-
-        // Adicionar tarefa
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-            await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ descricao: input.value }),
-            });
-            input.value = '';
-            carregarTarefas();
-        };
-
-        // Excluir tarefa
-        async function excluirTarefa(id) {
-            await fetch(`<span class="math-inline">\{apiUrl\}/</span>{id}`, { method: 'DELETE' });
-            carregarTarefas();
-        }
-
-        // Alternar conclusão
-        async function toggleTarefa(tarefa) {
-             await fetch(`<span class="math-inline">\{apiUrl\}/</span>{tarefa.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ descricao: tarefa.descricao, concluida: !tarefa.concluida }),
-            });
-            carregarTarefas();
-        }
-
-        carregarTarefas();
-    </script>
+    <div class="container">
+        <header>
+            <h1>Gerenciador de Tarefas</h1>
+            <p>Organize suas atividades de forma inteligente e produtiva</p>
+        </header>
+        <section class="stats">
+            <div class="card total">
+                <span id="total-tarefas">0</span>
+                <p>Total de Tarefas</p>
+            </div>
+            <div class="card concluidas">
+                <span id="tarefas-concluidas">0</span>
+                <p>Concluídas</p>
+            </div>
+            <div class="card pendentes">
+                <span id="tarefas-pendentes">0</span>
+                <p>Pendentes</p>
+            </div>
+        </section>
+        <form id="form-tarefa">
+            <input type="text" id="input-titulo" placeholder="Título da tarefa..." required>
+            <textarea id="input-descricao" placeholder="Descrição..."></textarea>
+            <button type="submit">+ Adicionar Tarefa</button>
+        </form>
+        <ul id="lista-tarefas"></ul>
+        <div id="mensagem-vazia" style="display:none;">
+            <p>Nenhuma tarefa encontrada<br>Que tal adicionar sua primeira tarefa?</p>
+        </div>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>

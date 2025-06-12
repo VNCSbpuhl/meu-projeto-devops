@@ -1,10 +1,118 @@
-body { font-family: sans-serif; background-color: #f4f4f4; }
-h1 { text-align: center; }
-form { display: flex; justify-content: center; margin-bottom: 20px; }
-input { padding: 10px; width: 300px; border: 1px solid #ddd; }
-button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-ul { list-style-type: none; padding: 0; max-width: 400px; margin: auto; }
-li { padding: 10px; background: #fff; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; cursor: pointer;}
-li:hover { background-color: #f0f0f0; }
-li.concluida { text-decoration: line-through; color: #888; }
-li button { background-color: #dc3545; }
+body {
+  background: linear-gradient(135deg, #7f53ac 0%, #647dee 100%);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+.container {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  padding: 32px 24px;
+}
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+header h1 {
+  background: linear-gradient(90deg, #ff512f, #dd2476);
+  color: #fff;
+  padding: 16px 0;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.card {
+  flex: 1;
+  margin: 0 6px;
+  background: #f7f7f7;
+  border-radius: 10px;
+  text-align: center;
+  padding: 12px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+input, textarea {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+}
+button {
+  background: linear-gradient(90deg, #36d1c4, #5b86e5);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button:hover {
+  background: linear-gradient(90deg, #5b86e5, #36d1c4);
+}
+ul#lista-tarefas {
+  list-style: none;
+  padding: 0;
+}
+ul#lista-tarefas li {
+  background: #f1f1f1;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+ul#lista-tarefas li.concluida {
+  text-decoration: line-through;
+  color: #aaa;
+  background: #e0e0e0;
+}
+.tarefa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tarefa-titulo {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.tarefa-descricao {
+  font-size: 0.98em;
+  color: #555;
+}
+.tarefa-botoes {
+  display: flex;
+  gap: 8px;
+}
+.tarefa-botoes button {
+  padding: 6px 10px;
+  font-size: 0.95em;
+  border-radius: 6px;
+  border: none;
+  background: #ff512f;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.tarefa-botoes button:hover {
+  background: #dd2476;
+}
+#mensagem-vazia {
+  text-align: center;
+  color: #888;
+  margin-top: 24px;
+}
