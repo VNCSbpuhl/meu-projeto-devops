@@ -56,7 +56,8 @@ jobs:
               -Dsonar.projectKey=meu-projeto-devops \
               -Dsonar.sources=. \
               -Dsonar.host.url=http://localhost:9000 \
-              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+              -Dsonar.login=admin \
+              -Dsonar.password=admin \
               -Dsonar.qualitygate.wait=true || {
                 echo "!! Falha na análise do SonarQube. Abortando deploy.";
                 docker stop sonarqube && docker rm sonarqube;
