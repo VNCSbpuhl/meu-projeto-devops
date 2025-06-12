@@ -41,7 +41,7 @@ jobs:
             docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
 
             echo ">> Aguardando SonarQube ficar pronto..."
-            sleep 30
+            sleep 60
             until $(curl -s -u admin:admin http://localhost:9000/api/system/status | grep -q '"status":"UP"'); do
                 echo "Aguardando SonarQube..."
                 sleep 10
