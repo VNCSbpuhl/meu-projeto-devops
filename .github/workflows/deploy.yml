@@ -37,6 +37,9 @@ jobs:
           script: |
             set -e
 
+            echo ">> Limpando containers antigos do SonarQube (se existirem)..."
+            docker rm -f sonarqube || true
+
             echo ">> Iniciando container do SonarQube..."
             docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
 
