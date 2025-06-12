@@ -1,0 +1,86 @@
+name: Deploy Automatizado com SonarQube
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-analyze-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout do código
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: 2. Login no Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 3. Build e Push da imagem Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/projeto-devops:${{ github.sha }}
+
+      - name: 4. Análise e Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            echo ">> Iniciando container do SonarQube..."
+            docker run -d --name sonarqube -p 9000:9000 sonarqube:lts-community
+
+            echo ">> Aguardando SonarQube ficar pronto..."
+            sleep 30
+            until $(curl -s -u admin:admin http://localhost:9000/api/system/status | grep -q '"status":"UP"'); do
+                echo "Aguardando SonarQube..."
+                sleep 10
+            done
+            echo ">> SonarQube está pronto!"
+
+            echo ">> Executando análise do SonarScanner..."
+            rm -rf ./temp-repo && git clone https://github.com/${{ github.repository }}.git ./temp-repo
+            cd ./temp-repo
+
+            docker run --rm --network=host -v "$(pwd):/usr/src" sonarsource/sonar-scanner-cli \
+              -Dsonar.projectKey=meu-projeto-devops \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=http://localhost:9000 \
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+              -Dsonar.qualitygate.wait=true || {
+                echo "!! Falha na análise do SonarQube. Abortando deploy.";
+                docker stop sonarqube && docker rm sonarqube;
+                exit 1;
+              }
+
+            echo ">> Análise do SonarQube aprovada! Finalizando container do SonarQube..."
+            docker stop sonarqube && docker rm sonarqube
+            cd .. && rm -rf ./temp-repo
+
+            echo ">> Iniciando deploy da aplicação..."
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/projeto-devops:${{ github.sha }}
+            docker stop app-container || true
+            docker rm app-container || true
+            docker run -d \
+              --name app-container \
+              -p 8242:8242 \
+              --network app-net \
+              -e DB_HOST=postgres-db \
+              -e DB_USER=admin \
+              -e DB_PASSWORD=admin \
+              -e DB_DATABASE=tarefasdb \
+              -e DB_PORT=5432 \
+              --restart always \
+              ${{ secrets.DOCKERHUB_USERNAME }}/projeto-devops:${{ github.sha }}
+
+            echo ">> Deploy concluído com sucesso!"

@@ -1,0 +1,10 @@
+body { font-family: sans-serif; background-color: #f4f4f4; }
+h1 { text-align: center; }
+form { display: flex; justify-content: center; margin-bottom: 20px; }
+input { padding: 10px; width: 300px; border: 1px solid #ddd; }
+button { padding: 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+ul { list-style-type: none; padding: 0; max-width: 400px; margin: auto; }
+li { padding: 10px; background: #fff; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; cursor: pointer;}
+li:hover { background-color: #f0f0f0; }
+li.concluida { text-decoration: line-through; color: #888; }
+li button { background-color: #dc3545; }
